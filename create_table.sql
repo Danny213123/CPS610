@@ -1,36 +1,41 @@
-CREATE TABLE Student (
-    Student_number INT PRIMARY KEY,
-    Name VARCHAR(50),
-    Class INT,
-    Major VARCHAR(50)
+CREATE TABLE student (
+    student_number INT PRIMARY KEY,
+    name VARCHAR2(50),
+    class INT,
+    major VARCHAR2(50)
 );
 
-CREATE TABLE Course (
-    Course_number VARCHAR(50) PRIMARY KEY,
-    Course_name VARCHAR(50),
-    Credit_hours INT,
-    Department VARCHAR(50)
+
+CREATE TABLE course (
+    course_number VARCHAR2(50) PRIMARY KEY,
+    course_name VARCHAR2(50),
+    credit_hours INT,
+    department VARCHAR2(50)
 );
 
-CREATE TABLE Section (
-    Section_identifier INT PRIMARY KEY,
-    Course_number VARCHAR(50),
-    Semester VARCHAR(10),
-    Year VARCHAR(10),
-    Instructor VARCHAR(50),
-    FOREIGN KEY (Course_number) REFERENCES Course(Course_number)
+
+CREATE TABLE section (
+    section_identifier INT PRIMARY KEY,
+    course_number VARCHAR2(50),
+    semester VARCHAR2(10),
+    year VARCHAR2(10),
+    instructor VARCHAR2(50),
+    FOREIGN KEY (course_number) REFERENCES course(course_number)
 );
 
-CREATE TABLE Grade_Report (
-    Student_number INT,
-    Section_identifier,
-    Grade VARCHAR(1),
-    FOREIGN KEY (Student_number) REFERENCES Student(Student_number),
-    FOREIGN KEY (Section_identifier) REFERENCES Section(Section_identifier)
+
+CREATE TABLE grade_report (
+    student_number INT,
+    Section_identifier INT,
+    hrade VARCHAR2(1),
+    PRIMARY KEY (student_number, section_identifier),
+    FOREIGN KEY (student_number) REFERENCES student(student_number),
+    FOREIGN KEY (dection_identifier) REFERENCES section(section_identifier)
 );
 
-CREATE TABLE Prerequisite (
-    Course_number VARCHAR(50),
-    Prerequisite_number INT PRIMARY KEY,
-    FOREIGN KEY (Course_number) REFERENCES Course(Course_number)
+
+CREATE TABLE prerequisite (
+    course_number VARCHAR2(50) PRIMARY KEY,
+    prerequisite_number INT,
+    FOREIGN KEY (course_number) REFERENCES course(course_number)
 );
