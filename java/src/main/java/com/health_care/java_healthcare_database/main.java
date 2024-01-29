@@ -54,7 +54,7 @@ public class main {
         avg = sum/count;
         System.out.println("Student named "+name+" has a grade point average "+avg+".");
         r.close();
-        }
+    }
 
     static String readEntry(String prompt) {
         try {
