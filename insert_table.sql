@@ -1,3 +1,35 @@
+INSERT INTO student VALUES (101, 'Alex', 1, 'CS');
+INSERT INTO student VALUES (102, 'Bob', 3, 'BM');
+INSERT INTO student VALUES (103, 'Steve', 2, 'CS');
+INSERT INTO student VALUES (104, 'Jessica', 1, 'CS');
+INSERT INTO student VALUES (105, 'Mary', 4, 'BS');
+INSERT INTO student VALUES (106, 'Joseph', 1, 'CS');
+INSERT INTO student VALUES (107, 'Bella', 4, 'BS');
+INSERT INTO student VALUES (108, 'Hanna', 2, 'CS');
+INSERT INTO student VALUES (109, 'Travis', 4, 'BS');
+INSERT INTO student VALUES (110, 'Daniel', 3, 'BM');
+
+
+INSERT INTO course VALUES('CPS109', 'Introduction to Computer Science I', 52, 'CS');
+INSERT INTO course VALUES('CPS209', 'Introduction to Computer Science II', 52, 'CS');
+INSERT INTO course VALUES('CPS510', 'Database System I', 52, 'CS');
+INSERT INTO course VALUES('CPS610', 'Database System II', 52, 'CS');
+INSERT INTO course VALUES('QMS110', 'Applied Mathematics for Business', 50, 'BM');
+INSERT INTO course VALUES('MKT100', 'Principles of Marketing', 50, 'BM');
+INSERT INTO course VALUES('BLG143', 'Biology I', 48, 'BS');
+INSERT INTO course VALUES('BLG144', 'Biology II', 48, 'BS');
+
+INSERT INTO section VALUES(1, 'CPS109', 'Fall', 2023, 'John');
+INSERT INTO section VALUES(2, 'CPS109', 'Fall', 2023, 'Abdul');
+INSERT INTO section VALUES(3, 'CPS209', 'Winter', 2024, 'Gale');
+INSERT INTO section VALUES(12, 'CPS510', 'Fall', 2023, 'Mikhail');
+INSERT INTO section VALUES(13, 'CPS610', 'Winter', 2024, 'Matthew');
+INSERT INTO section VALUES(20, 'QMS110', 'Fall', 2023, 'Ben');
+INSERT INTO section VALUES(22, 'MKT100', 'Winter', 2024, 'Jen');
+INSERT INTO section VALUES(40, 'BLG143', 'Fall', 2023, 'Raina');
+INSERT INTO section VALUES(42, 'BLG144', 'Winter', 2024, 'Michelle');
+
+
 INSERT INTO grade_report VALUES (101, 1, 'A');
 INSERT INTO grade_report VALUES (103, 2, 'B');
 INSERT INTO grade_report VALUES (104, 1, 'A');
