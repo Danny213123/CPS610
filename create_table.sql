@@ -23,14 +23,13 @@ CREATE TABLE section (
     FOREIGN KEY (course_number) REFERENCES course(course_number)
 );
 
-
 CREATE TABLE grade_report (
     student_number INT,
     Section_identifier INT,
-    hrade VARCHAR2(1),
+    grade VARCHAR2(1),
     PRIMARY KEY (student_number, section_identifier),
     FOREIGN KEY (student_number) REFERENCES student(student_number),
-    FOREIGN KEY (dection_identifier) REFERENCES section(section_identifier)
+    FOREIGN KEY (section_identifier) REFERENCES section(section_identifier)
 );
 
 
