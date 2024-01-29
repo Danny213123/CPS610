@@ -12,8 +12,8 @@ import java.io.*;
  * @author 666on
  */
 public class get_connection {
-    // private static final String USERNAME = "d1guan";
-    // private static final String PASSWORD = "08081498";
+    // private static final String USERNAME = "";
+    // private static final String PASSWORD = "";
     // private static final String CONNECTION = "oracle.scs.ryerson.ca:1521:orcl";
     
     private static Connection conn;
