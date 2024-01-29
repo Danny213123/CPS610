@@ -32,9 +32,8 @@ CREATE TABLE grade_report (
     FOREIGN KEY (section_identifier) REFERENCES section(section_identifier)
 );
 
-
 CREATE TABLE prerequisite (
     course_number VARCHAR2(50) PRIMARY KEY,
-    prerequisite_number INT,
+    prerequisite_number VARCHAR2(50),
     FOREIGN KEY (course_number) REFERENCES course(course_number)
 );
