@@ -34,7 +34,6 @@ public class get_connection {
             conn = DriverManager.getConnection(dbURL1);
             if (conn != null) {
                 System.out.println("Connected with oracle.");
-
             }
         } catch (SQLException error) {
             System.out.println("Issue: " + error);
