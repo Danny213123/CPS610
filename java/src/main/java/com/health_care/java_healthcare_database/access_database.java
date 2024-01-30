@@ -13,11 +13,11 @@ import java.sql.*;
  * @author Danny Guan
  */
 
-public class main {
+public class access_database {
     
     public static void main(String[] args){
-        get_connection connection = new get_connection();
-        Connection conn = connection.GetConnection();
+        Connection conn = get_connection.return_connection();
+
         try {
             part_one(conn);
         } catch (SQLException error) {
@@ -25,6 +25,7 @@ public class main {
         }
     }
 
+    // Returns the grade point average of a student given their name
     public static void part_one(Connection conn) throws SQLException {
         String name;
         String grade;
