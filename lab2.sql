@@ -1,5 +1,5 @@
-DROP TABLE professor;
-DROP TYPE depart_type;
+-- DROP TABLE professor;
+-- DROP TYPE depart_type;
 
 CREATE TYPE depart_type AS OBJECT
 (
@@ -26,16 +26,16 @@ INSERT INTO professor (name, emp_id, email, income, depart_type) VALUES ('Emily 
 CREATE OR REPLACE PROCEDURE Poor 
 IS
 BEGIN
-    FOR prof IN (SELECT * FROM Professor WHERE Income < 40000) LOOP
-        DBMS_OUTPUT.PUT_LINE('Name: ' || prof.Name || ', Emp_id: ' || prof.Emp_id || ', Email: ' || prof.Email);
+    FOR professor_record IN (SELECT * FROM Professor WHERE Income < 40000) LOOP
+        DBMS_OUTPUT.PUT_LINE('Name: ' || professor_record.Name || ', Emp_id: ' || professor_record.Emp_id || ', Email: ' || professor_record.Email);
     END LOOP;
 END Poor;
 
 CREATE OR REPLACE PROCEDURE Average AS
-    v_avg_income NUMBER;
+    avg_income NUMBER;
 BEGIN
-    SELECT AVG(Income) INTO v_avg_income FROM Professor;
-    DBMS_OUTPUT.PUT_LINE('Average Income: $' || v_avg_income);
+    SELECT AVG(Income) INTO avg_income FROM Professor;
+    DBMS_OUTPUT.PUT_LINE('Average Income: $' || avg_income);
 END Average;
 
 SELECT * FROM professor;
