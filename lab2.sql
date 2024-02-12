@@ -11,7 +11,7 @@ CREATE TYPE depart_type AS OBJECT
 
 CREATE TABLE professor (
     name VARCHAR(100),
-    emp_id INT,
+    emp_id INT PRIMARY KEY,
     email VARCHAR(100),
     income DECIMAL(10, 2),
     depart_type depart_type
