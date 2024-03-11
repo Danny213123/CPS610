@@ -19,7 +19,7 @@ public class access_database {
         Connection conn = get_connection.return_connection();
 
         try {
-            part_one(conn);
+            lab_four(conn);
         } catch (SQLException error) {
             System.out.println("Issue: " + error);
         }
@@ -55,6 +55,30 @@ public class access_database {
         avg = sum/count;
         System.out.println("Student named "+name+" has a grade point average "+avg+".");
         r.close();
+    }
+
+    public static void lab_four(Connection conn) throws SQLException {
+        transaction t1 = new transaction(1);
+        transaction t2 = new transaction(2);
+
+        write w1 = new write(1, 5);
+        read r1 = new read(2);
+        write w2 = new write(2, 3);
+        read r2 = new read(1);
+
+        t1.add_operation(w1);
+        t1.add_operation(r1);
+        t1.add_operation(w2);
+        t1.add_operation(r2);
+
+        read r3 = new read(1);
+        write w3 = new write(1, 2);
+
+        t2.add_operation(r3);
+        t2.add_operation(w3);
+
+        t1.to_string();
+        t2.to_string();
     }
 
     static String readEntry(String prompt) {
