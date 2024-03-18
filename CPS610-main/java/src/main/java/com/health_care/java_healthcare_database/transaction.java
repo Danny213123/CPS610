@@ -3,15 +3,16 @@ package com.health_care.java_healthcare_database;
 import java.util.ArrayList;
 
 public class transaction {
-    public static int transaction_id;
-    public static ArrayList<operation> operations = new ArrayList<operation>();
+    public int transactionId;
+    public ArrayList<operation> operations = new ArrayList<operation>();
+    public ArrayList<recordObj> lockedRecords = new ArrayList<recordObj>();
 
     public transaction(int transaction_id){
-        transaction.transaction_id = transaction_id;
+        this.transactionId = transaction_id;
     }
 
     public int get_transaction_id(){
-        return transaction_id;
+        return transactionId;
     }
 
     public ArrayList<operation> get_operations(){
@@ -23,11 +24,11 @@ public class transaction {
     }
 
     public void set_transaction_id(int transaction_id){
-        transaction.transaction_id = transaction_id;
+        this.transactionId = transaction_id;
     }
 
     public void to_string(){
-        System.out.println("Transaction ID: " + transaction_id);
+        System.out.println("Transaction ID: " + transactionId);
         for (int i = 0; i < operations.size(); i++){
             System.out.println(operations.get(i));
         }
