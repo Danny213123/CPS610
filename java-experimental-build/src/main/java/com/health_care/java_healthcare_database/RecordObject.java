@@ -10,6 +10,7 @@ public class RecordObject {
     public LockState lockState;
     public ArrayList<Transaction> transactionsHoldingSharedLock = new ArrayList<Transaction>();
     public Transaction transactionHoldingExclusiveLock = null;
+    public ArrayList<Transaction> transactionsWaitingForLock = new ArrayList<Transaction>();
 
     /**
      * Constructor for the record object
@@ -20,6 +21,11 @@ public class RecordObject {
     public RecordObject (Integer recordId, Integer valueInitial) {
         this.recordId = recordId;
         this.value = valueInitial;
+        this.lockState = LockState.NONE;
+    }
+
+    public void addTransactionWaitingForLock(Transaction transaction) {
+        this.transactionsWaitingForLock.add(transaction);
     }
 
     /**
@@ -66,6 +72,10 @@ public class RecordObject {
         this.lockState = newLockState;
     }
 
+    public void addTransactionHoldingSharedLock(Transaction transaction) {
+        this.transactionsHoldingSharedLock.add(transaction);
+    }
+
     /**
      * Returns the transactions holding a shared lock
      * @return transactionsHoldingSharedLock
@@ -74,6 +84,10 @@ public class RecordObject {
     public Transaction getTransactionHoldingExclusiveLock() {
 		return this.transactionHoldingExclusiveLock;
 	}
+
+    public ArrayList<Transaction> getTransactionsHoldingSharedLock() {
+        return this.transactionsHoldingSharedLock;
+    }
 
     /**
      * Sets the transaction holding a shared lock
@@ -84,5 +98,13 @@ public class RecordObject {
 		this.transactionHoldingExclusiveLock = transactionHoldingExclusiveLock;
 	}
 
+    public void removeLocks(Transaction transaction) {
+        if (this.transactionHoldingExclusiveLock != null && this.transactionHoldingExclusiveLock.equals(transaction)) {
+            this.transactionHoldingExclusiveLock = null;
+        }
+        if (this.transactionsHoldingSharedLock.contains(transaction)) {
+            this.transactionsHoldingSharedLock.remove(transaction);
+        }
+    }
 }
  

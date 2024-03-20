@@ -7,6 +7,7 @@ public class Transaction {
     public Integer transactionId;
     public ArrayList<Operation> operations = new ArrayList<Operation>();
     public ArrayList<String> acquiredLocks = new ArrayList<String>();
+    public ArrayList<RecordObject> recordsWaiting = new ArrayList<RecordObject>();
     public TransactionState transactionState;
 
     /**
@@ -17,6 +18,10 @@ public class Transaction {
     public Transaction(int transactionId){
         this.transactionId = transactionId;
         this.transactionState = TransactionState.ACTIVE;
+    }
+
+    public void addRecordWaiting(RecordObject record){
+        recordsWaiting.add(record);
     }
 
     /**
