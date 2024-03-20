@@ -8,6 +8,7 @@ public class Database {
     public HashMap<Integer, Transaction> transactions;
     public HashMap<Integer, RecordObject> records;
     public ArrayList<Integer> transactionPointer; 
+    public ArrayList<Operation> log = new ArrayList<Operation>();
 
     /* 
      * Constructor for the database
@@ -160,72 +161,119 @@ public class Database {
 
         // iterator
         Iterator<Operation> iterator = schedule.iterator();
+
         while (iterator.hasNext()) {
             Operation operation = iterator.next();
             System.out.println(operation.getOperationType());
-            switch (operation.getOperationType()){
-                case READ:
-                    RecordObject record = records.get(operation.getRecord());
 
-                    System.out.println("record has lock state " + record.getLockState() + " and value " + record.getValue() + " and is being read by transaction " + operation.getTransactionId() + ".");
-                    System.out.println(record + " was read with value: " + record.getValue());
+            if (log.contains(operation)) {
+                continue;
+            } else {
+                switch (operation.getOperationType()){
+                    case READ:
+                        RecordObject record = records.get(operation.getRecord());
 
-                    // If no lock existed on that record from any transactions, a Shared Lock can be acquired on it by the current transaction
-                    if (record.getLockState() == LockState.NONE) {
-                        record.setLockState(LockState.SHARED);
-                        record.addTransactionHoldingSharedLock(transactions.get(operation.getTransactionId()));
-                    } else if (record.getLockState() == LockState.SHARED) {
-                        // if another transaction holds a shared lock on the record, the current transaction is added to the list of transactions holding the lock
-                        record.addTransactionHoldingSharedLock(transactions.get(operation.getTransactionId()));
-                    } else if (record.getLockState() == LockState.EXCLUSIVE) {
-                        // If the record is locked by another transaction, the current transaction is added to the list of transactions waiting for the lock
-                        record.addTransactionWaitingForLock(transactions.get(operation.getTransactionId()));
-                    }
+                        // If no lock existed on that record from any transactions, a Shared Lock can be acquired on it by the current transaction
+                        if (record.getLockState() == LockState.NONE) {
 
-                    break;
-                case WRITE:
-                    RecordObject recordWrite = records.get(operation.getRecord());
+                            System.out.println("record has lock state " + record.getLockState() + " and value " + record.getValue() + " and is being read by transaction " + operation.getTransactionId() + ".");
+                            System.out.println(record + " was read with value: " + record.getValue());    
 
-                    System.out.println("record has lock state " + recordWrite.getLockState() + " and value " + recordWrite.getValue() + " and is being written by transaction " + operation.getTransactionId() + ".");
-                    System.out.println(recordWrite + " was written with value: " + operation.getValue());
+                            record.setLockState(LockState.SHARED);
+                            record.addTransactionHoldingSharedLock(transactions.get(operation.getTransactionId()));
 
-                    // If no lock existed on that record from any transactions, an Exclusive Lock can be acquired on it by the current transaction
-                    if (recordWrite.getLockState() == LockState.NONE) {
-                        recordWrite.setLockState(LockState.EXCLUSIVE);
-                        recordWrite.setTransactionHoldingExclusiveLock(transactions.get(operation.getTransactionId()));
-                    } else if (recordWrite.getTransactionsHoldingSharedLock().contains(operation.getTransactionId())) {
-                        // if the current transaction holds a shared lock on the record, it can be upgraded to an exclusive lock
-                        recordWrite.setLockState(LockState.EXCLUSIVE);
-                        recordWrite.setTransactionHoldingExclusiveLock(transactions.get(operation.getTransactionId()));
-                    } else if (recordWrite.getTransactionHoldingExclusiveLock() != transactions.get(operation.getTransactionId())) {
-                        // If the record is locked by another transaction, the current transaction is added to the list of transactions waiting for the lock
-                        transactions.get(operation.getTransactionId()).addRecordWaiting(recordWrite);
-                    }
-                    break;
-                case COMMIT:
-                    transactions.get(operation.getTransactionId()).setState(TransactionState.COMMITED);
+                            // add current operation to the list of operations
+                            log.add(operation);
+                            iterator.remove();
 
-                    // remove all locks
-                    for (RecordObject recordObject : records.values()) {
-                        recordObject.removeLocks(transactions.get(operation.getTransactionId()));
-                        
-                        // if recordobject has no locks, set lock state to none
-                        if (recordObject.getTransactionHoldingExclusiveLock() == null && recordObject.getTransactionsHoldingSharedLock().size() == 0) {
-                            recordObject.setLockState(LockState.NONE);
+                        } else if (record.getLockState() == LockState.SHARED) {
+                            // if another transaction holds a shared lock on the record, the current transaction is added to the list of transactions holding the lock
+
+                            System.out.println("record has lock state " + record.getLockState() + " and value " + record.getValue() + " and is being read by transaction " + operation.getTransactionId() + ".");
+                            System.out.println(record + " was read with value: " + record.getValue());
+
+                            record.addTransactionHoldingSharedLock(transactions.get(operation.getTransactionId()));
+
+                            // add current operation to the list of operations
+                            log.add(operation);
+                            iterator.remove();
+
+                        } else if (record.getLockState() == LockState.EXCLUSIVE) {
+                            // If the record is locked by another transaction, the current transaction is added to the list of transactions waiting for the lock
+                            record.addTransactionWaitingForLock(transactions.get(operation.getTransactionId()));
                         }
 
-                        // if recordObject has an exclusive lock made by the transaction, remove the lock
-                        if (recordObject.getTransactionHoldingExclusiveLock() == transactions.get(operation.getTransactionId())) {
-                            recordObject.setTransactionHoldingExclusiveLock(null);
+                        break;
+                    case WRITE:
+                        RecordObject recordWrite = records.get(operation.getRecord());
+
+                        // If no lock existed on that record from any transactions, an Exclusive Lock can be acquired on it by the current transaction
+                        if (recordWrite.getLockState() == LockState.NONE) {
+
+                            System.out.println("record has lock state " + recordWrite.getLockState() + " and value " + recordWrite.getValue() + " and is being written by transaction " + operation.getTransactionId() + ".");
+                            System.out.println(recordWrite + " was written with value: " + operation.getValue());
+
+                            recordWrite.setLockState(LockState.EXCLUSIVE);
+                            recordWrite.setTransactionHoldingExclusiveLock(transactions.get(operation.getTransactionId()));
+
+                            // add current operation to the list of operations
+                            log.add(operation);
+                            iterator.remove();
+
+                        } else if (recordWrite.getTransactionsHoldingSharedLock().contains(operation.getTransactionId())) {
+                            // if the current transaction holds a shared lock on the record, it can be upgraded to an exclusive lock
+
+                            System.out.println("record has lock state " + recordWrite.getLockState() + " and value " + recordWrite.getValue() + " and is being written by transaction " + operation.getTransactionId() + ".");
+                            System.out.println(recordWrite + " was written with value: " + operation.getValue());
+
+                            recordWrite.setLockState(LockState.EXCLUSIVE);
+                            recordWrite.setTransactionHoldingExclusiveLock(transactions.get(operation.getTransactionId()));
+
+                            // add current operation to the list of operations
+                            log.add(operation);
+                            iterator.remove();
+
+                        } else if (recordWrite.getTransactionHoldingExclusiveLock() != transactions.get(operation.getTransactionId())) {
+                            // If the record is locked by another transaction, the current transaction is added to the list of transactions waiting for the lock
+                            transactions.get(operation.getTransactionId()).addRecordWaiting(recordWrite);
+                        } else {
+                            // add current operation to the list of operations
+
+                            System.out.println("record has lock state " + recordWrite.getLockState() + " and value " + recordWrite.getValue() + " and is being written by transaction " + operation.getTransactionId() + ".");
+                            System.out.println(recordWrite + " was written with value: " + operation.getValue());
+
+                            log.add(operation);
+                            iterator.remove();
                         }
-                    }
-                    System.out.println(operation.getTransactionId() + " was committed.");
-                    break;
-                default: 
-                    System.out.println("Unknown operation: " + operation);
-                    break;
+                        break;
+                    case COMMIT:
+                        transactions.get(operation.getTransactionId()).setState(TransactionState.COMMITED);
+
+                        // remove all locks
+                        for (RecordObject recordObject : records.values()) {
+                            recordObject.removeLocks(transactions.get(operation.getTransactionId()));
+                            
+                            // if recordobject has no locks, set lock state to none
+                            if (recordObject.getTransactionHoldingExclusiveLock() == null && recordObject.getTransactionsHoldingSharedLock().size() == 0) {
+                                recordObject.setLockState(LockState.NONE);
+                            }
+
+                            // if recordObject has an exclusive lock made by the transaction, remove the lock
+                            if (recordObject.getTransactionHoldingExclusiveLock() == transactions.get(operation.getTransactionId())) {
+                                recordObject.setTransactionHoldingExclusiveLock(null);
+                            }
+                        }
+
+                        iterator.remove();
+                        System.out.println(operation.getTransactionId() + " was committed.");
+                        break;
+                    default: 
+                        System.out.println("Unknown operation: " + operation);
+                        break;
+                }
             }
-            iterator.remove();
         }
+
+        System.out.println(log);
     }
 }
